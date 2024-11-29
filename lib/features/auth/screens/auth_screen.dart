@@ -1,4 +1,4 @@
-// lib/features/auth/screens/auth_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -68,7 +68,7 @@ Widget build(BuildContext context) {
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF3B82F6), // Using the blue from our theme
+                    color:  _primaryBlue, // Using the blue from our theme
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -85,7 +85,7 @@ Widget build(BuildContext context) {
                 Container(
                   constraints: const BoxConstraints(maxWidth: 400),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF1E2230), // Darker background for card
+                    color: _cardBackground, 
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
@@ -97,7 +97,7 @@ Widget build(BuildContext context) {
                   ),
                   child: Column(
                     children: [
-                      // Tab-like buttons for Login/Signup
+                
                       Row(
                         children: [
                           Expanded(
@@ -112,7 +112,7 @@ Widget build(BuildContext context) {
                                   border: Border(
                                     bottom: BorderSide(
                                       color: isLogin
-                                          ? const Color(0xFF3B82F6)
+                                          ? _primaryBlue
                                           : Colors.transparent,
                                       width: 2,
                                     ),
@@ -123,7 +123,7 @@ Widget build(BuildContext context) {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: isLogin
-                                        ? const Color(0xFF3B82F6)
+                                        ? _primaryBlue
                                         : Colors.grey,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -143,7 +143,7 @@ Widget build(BuildContext context) {
                                   border: Border(
                                     bottom: BorderSide(
                                       color: !isLogin
-                                          ? const Color(0xFF3B82F6)
+                                          ? _primaryBlue
                                           : Colors.transparent,
                                       width: 2,
                                     ),
@@ -154,7 +154,7 @@ Widget build(BuildContext context) {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: !isLogin
-                                        ? const Color(0xFF3B82F6)
+                                        ? _primaryBlue
                                         : Colors.grey,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -421,7 +421,6 @@ Widget build(BuildContext context) {
     );
   }
 
-  // Continuing from the previous code...
 
   Widget _buildSocialLinkButton({
     required IconData icon,
@@ -601,7 +600,7 @@ Widget build(BuildContext context) {
   Future<void> _handleLogin() async {
     if (_loginFormKey.currentState!.validate()) {
       try {
-        // Changed authStateProvider to authProvider
+    
         await ref.read(authProvider.notifier).login(
           _loginEmailController.text,
           _loginPasswordController.text,
@@ -635,7 +634,7 @@ Widget build(BuildContext context) {
     );
 
     try {
-      // Changed authStateProvider to authProvider
+  
       await ref.read(authProvider.notifier).register(signupData);
       
       if (mounted) {

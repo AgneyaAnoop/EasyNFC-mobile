@@ -1,6 +1,5 @@
 import './social_link.dart';
 
-// lib/features/auth/models/signup_data.dart
 class SignupData {
   final String email;
   final String password;

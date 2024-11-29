@@ -1,4 +1,4 @@
-// lib/features/auth/providers/auth_provider.dart
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/auth_service.dart';
 import '../models/signup_data.dart';
@@ -35,7 +35,7 @@ class AuthState {
     return AuthState(
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
       isLoading: isLoading ?? this.isLoading,
-      error: error, // Pass null to remove error
+      error: error,
       token: token ?? this.token,
     );
   }
@@ -45,7 +45,37 @@ class AuthState {
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthService _authService;
 
-  AuthNotifier(this._authService) : super(AuthState());
+  AuthNotifier(this._authService) : super(AuthState()) {
+    // Check authentication status when provider is created
+    checkAuthStatus();
+  }
+
+  Future<void> checkAuthStatus() async {
+    try {
+      state = state.copyWith(isLoading: true);
+      final isAuthenticated = await _authService.isAuthenticated();
+      
+      if (isAuthenticated) {
+        final token = await _authService.getStoredToken();
+        state = state.copyWith(
+          isAuthenticated: true,
+          token: token,
+          isLoading: false,
+        );
+      } else {
+        state = state.copyWith(
+          isAuthenticated: false,
+          isLoading: false,
+        );
+      }
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        error: e.toString(),
+      );
+    }
+  }
+
 
   Future<void> login(String email, String password) async {
     try {

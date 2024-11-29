@@ -1,6 +1,5 @@
-// lib/features/nfc/services/nfc_service.dart
+
 import 'package:nfc_manager/nfc_manager.dart';
-import 'dart:typed_data';
 
 class NFCService {
   static Future<bool> isNFCAvailable() async {
