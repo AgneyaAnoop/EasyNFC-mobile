@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/profile_provider.dart';
@@ -9,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../config/api_config.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../auth/screens/auth_screen.dart';
+import './profile_create_screen.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -25,7 +25,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   void initState() {
     super.initState();
     _pageController.addListener(_handlePageChange);
-    
+
     // Load profiles
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(profileProvider.notifier).loadActiveProfile();
@@ -48,34 +48,35 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   Future<void> _handleLogout() async {
     final navigator = Navigator.of(context);
-    
+
     final shouldLogout = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Logout'),
-        content: const Text('Are you sure you want to logout?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Logout'),
+            content: const Text('Are you sure you want to logout?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.red,
+                ),
+                child: const Text('Logout'),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.white,
-              backgroundColor: Colors.red,
-            ),
-            child: const Text('Logout'),
-          ),
-        ],
-      ),
-    ) ?? false;
+        ) ??
+        false;
 
     if (!shouldLogout || !mounted) return;
 
     try {
       await ref.read(authProvider.notifier).logout();
-      
+
       if (!mounted) return;
       navigator.pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const AuthScreen()),
@@ -117,7 +118,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   Future<void> _previewProfile(String urlSlug) async {
     final url = APIConfig.getPublicProfileUrl(urlSlug);
     final uri = Uri.parse(url);
-    
+
     try {
       // Try to launch URL
       if (await canLaunchUrl(uri)) {
@@ -221,7 +222,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       );
     }
 
-    return SingleChildScrollView(  // Added ScrollView
+    return SingleChildScrollView(
+      // Added ScrollView
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -253,7 +255,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                     ?.copyWith(
                                       fontWeight: FontWeight.bold,
                                     ),
-                                overflow: TextOverflow.ellipsis,  // Added overflow handling
+                                overflow: TextOverflow
+                                    .ellipsis, // Added overflow handling
                               ),
                             ],
                           ),
@@ -267,13 +270,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     const SizedBox(height: 16),
                     Text(
                       state.activeProfile!.about,
-                      overflow: TextOverflow.ellipsis,  // Added overflow handling
-                      maxLines: 3,  // Limit lines
+                      overflow:
+                          TextOverflow.ellipsis, // Added overflow handling
+                      maxLines: 3, // Limit lines
                     ),
                     const SizedBox(height: 16),
                     const Divider(),
                     const SizedBox(height: 16),
-                    SingleChildScrollView(  // Make buttons scrollable if needed
+                    SingleChildScrollView(
+                      // Make buttons scrollable if needed
                       scrollDirection: Axis.horizontal,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -286,14 +291,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                   state.activeProfile!.urlSlug),
                             ),
                           ),
-                          const SizedBox(width: 8),  // Added spacing
+                          const SizedBox(width: 8), // Added spacing
                           _ActionButton(
                             icon: Icons.preview,
                             label: 'Preview',
                             onPressed: () =>
                                 _previewProfile(state.activeProfile!.urlSlug),
                           ),
-                          const SizedBox(width: 8),  // Added spacing
+                          const SizedBox(width: 8), // Added spacing
                           _ActionButton(
                             icon: Icons.share,
                             label: 'Share',
@@ -333,7 +338,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),  // Added bottom padding
+            const SizedBox(height: 16), // Added bottom padding
           ],
         ),
       ),
@@ -358,7 +363,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             if (state.profiles.length < 5)
               ElevatedButton.icon(
                 onPressed: () {
-                  // Navigate to create profile screen
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const CreateProfileScreen(),
+                    ),
+                  );
                 },
                 icon: const Icon(Icons.add),
                 label: const Text('New Profile'),
